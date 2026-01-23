@@ -1,0 +1,18 @@
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Keynote temporary/metadata files
+.incremental
+.metadata
+.lock
+
+# IDE / Editor folders (Optional but recommended)
+.vscode/
+.idea/
+*.swp
+
+# Thumbs and OS metadata
+Thumbs.db
+ehthumbs.db
