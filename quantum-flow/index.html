@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Flow | Interactive Particle Sandbox</title>
+  <meta name="description" content="A premium, interactive particle sandbox simulating real-time physics, gravity, orbital dynamics, and ambient audio synthesis.">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts: Outfit (UI) and JetBrains Mono (Stats) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Canvas for rendering particles -->
+  <canvas id="flow-canvas"></canvas>
+
+  <!-- Real-time Stats Overlay -->
+  <div id="stats-panel">
+    <div class="stat-item">
+      <span class="stat-label">FPS</span>
+      <span id="fps-val" class="stat-value">60</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Particles</span>
+      <span id="particle-count-val" class="stat-value">0</span>
+    </div>
+  </div>
+
+  <!-- Interactive Control Drawer -->
+  <aside id="control-panel" class="glass-panel" aria-label="Controls">
+    <div class="panel-header">
+      <div class="brand-info">
+        <h1>QUANTUM FLOW</h1>
+        <p class="subtitle">Interactive Physics Sandbox</p>
+      </div>
+      <button id="toggle-panel-btn" class="icon-btn" aria-label="Collapse panel">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+    </div>
+
+    <div class="panel-content">
+      <!-- Section: Presets -->
+      <section class="control-group">
+        <h2>Presets</h2>
+        <div class="presets-grid">
+          <button class="preset-btn active" data-preset="galaxy">Galaxy</button>
+          <button class="preset-btn" data-preset="fireworks">Fireworks</button>
+          <button class="preset-btn" data-preset="snow">Snow Drift</button>
+          <button class="preset-btn" data-preset="chaos">Quantum Chaos</button>
+        </div>
+      </section>
+
+      <!-- Section: Mouse Interaction Mode -->
+      <section class="control-group">
+        <h2>Mouse Interaction</h2>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="interaction-mode" value="attract" checked>
+            <span class="radio-label">Attract (Gravity)</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="interaction-mode" value="repel">
+            <span class="radio-label">Repel (Shield)</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="interaction-mode" value="vortex">
+            <span class="radio-label">Vortex (Whirl)</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="interaction-mode" value="spawn">
+            <span class="radio-label">Spawn (Emitter)</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Section: Physics Sliders -->
+      <section class="control-group">
+        <h2>Physics Parameters</h2>
+        
+        <div class="slider-wrapper">
+          <div class="slider-header">
+            <label for="particles-slider">Active Particles</label>
+            <span id="particles-slider-val">1000</span>
+          </div>
+          <input type="range" id="particles-slider" min="100" max="4000" step="50" value="1000">
+        </div>
+
+        <div class="slider-wrapper">
+          <div class="slider-header">
+            <label for="speed-slider">Max Velocity</label>
+            <span id="speed-slider-val">6.0</span>
+          </div>
+          <input type="range" id="speed-slider" min="1" max="20" step="0.5" value="6.0">
+        </div>
+
+        <div class="slider-wrapper">
+          <div class="slider-header">
+            <label for="size-slider">Particle Size</label>
+            <span id="size-slider-val">2.5</span>
+          </div>
+          <input type="range" id="size-slider" min="0.5" max="10" step="0.5" value="2.5">
+        </div>
+
+        <div class="slider-wrapper">
+          <div class="slider-header">
+            <label for="gravity-slider">Gravity Force</label>
+            <span id="gravity-slider-val">0.00</span>
+          </div>
+          <input type="range" id="gravity-slider" min="-0.5" max="1.5" step="0.05" value="0.00">
+        </div>
+
+        <div class="slider-wrapper">
+          <div class="slider-header">
+            <label for="friction-slider">Damping / Friction</label>
+            <span id="friction-slider-val">0.985</span>
+          </div>
+          <input type="range" id="friction-slider" min="0.90" max="0.999" step="0.001" value="0.985">
+        </div>
+
+        <div class="slider-wrapper">
+          <div class="slider-header">
+            <label for="trail-slider">Trail Intensity</label>
+            <span id="trail-slider-val">0.12</span>
+          </div>
+          <input type="range" id="trail-slider" min="0.02" max="0.6" step="0.01" value="0.12">
+        </div>
+      </section>
+
+      <!-- Section: Visuals / Colors -->
+      <section class="control-group">
+        <h2>Color Palette</h2>
+        <div class="color-grid">
+          <button class="color-btn active" data-color="nebula" title="Nebula (Cyan/Purple)">
+            <span class="color-swatch nebula-swatch"></span>
+            Nebula
+          </button>
+          <button class="color-btn" data-color="solar" title="Solar Flare (Orange/Red)">
+            <span class="color-swatch solar-swatch"></span>
+            Solar
+          </button>
+          <button class="color-btn" data-color="aurora" title="Aurora (Green/Teal)">
+            <span class="color-swatch aurora-swatch"></span>
+            Aurora
+          </button>
+          <button class="color-btn" data-color="rainbow" title="Rainbow (Hue Shift)">
+            <span class="color-swatch rainbow-swatch"></span>
+            Rainbow
+          </button>
+          <button class="color-btn" data-color="monochrome" title="Quantum Gray">
+            <span class="color-swatch monochrome-swatch"></span>
+            Sleek
+          </button>
+        </div>
+      </section>
+
+      <!-- Section: Web Audio Synth -->
+      <section class="control-group">
+        <h2>Audio Integration</h2>
+        <div class="toggle-wrapper">
+          <label class="toggle-switch">
+            <input type="checkbox" id="audio-toggle">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Ambient Velocity Synth</span>
+        </div>
+      </section>
+
+      <!-- Panel Footer Actions -->
+      <div class="panel-actions">
+        <button id="clear-btn" class="secondary-btn">Explode Field</button>
+        <button id="reset-btn" class="primary-btn">Reset Defaults</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Button to open panel when collapsed -->
+  <button id="expand-panel-btn" class="icon-btn floating-btn hidden" aria-label="Expand panel">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </button>
+
+  <script src="app.js"></script>
+</body>
+</html>
